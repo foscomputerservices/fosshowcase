@@ -1,7 +1,7 @@
-// LandingPage.swift
+// LandingPageViewModelTests.swift
 //
-// Created by David Hunt on 9/10/24
-// Copyright 2024 FOS Computer Services, LLC
+// Created by David Hunt on 1/2/25
+// Copyright 2025 FOS Computer Services, LLC
 //
 // Licensed under the Apache License, Version 2.0 (the  License);
 // you may not use this file except in compliance with the License.
@@ -17,21 +17,21 @@
 
 import FOSFoundation
 import FOSMVVM
+import FOSShowcase
+import FOSTesting
 import Foundation
-import Ignite
-import ViewModels
+import Testing
 
-struct LandingPage: StaticLayout {
-    var title: String {
-        // REVIEWED dgh: Not being localized is considered an internal error
-        // swiftlint:disable:next force_try
-        try! viewModel.pageTitle.localizedString
+@Suite("My Test Suite", .serialized)
+final class LandingPageViewModelTests: LocalizableTestCase {
+    @Test func validViewModel() async throws {
+        try expectCodable(LandingPageViewModel.self)
+        try expectVersionedViewModel(LandingPageViewModel.self)
     }
 
-    let viewModel: LandingPageViewModel
-
-    var body: some HTML {
-        Text(viewModel.pageTitle)
-            .font(.title1)
+    let locStore: LocalizationStore
+    var locales: Set<Locale> { [Self.en, Self.es] }
+    init() async throws {
+        self.locStore = try await Self.loadLocalizationStore(bundle: Bundle.main)
     }
 }
